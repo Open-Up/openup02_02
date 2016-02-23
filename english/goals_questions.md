@@ -4,18 +4,18 @@
 
 Students should be able to :
 
- - Read and understand the article
- - Expose author point of view
- - After preparation present the article during 3 minutes
+- Read and understand the article
+- Expose author point of view
+- After preparation present the article during 3 minutes
 
 Note : They might use he provided questions to help them in these steps.
 
-This exercice will :
+This exercise will :
 
- - make them read news papers
- - make them summarize opinions
- - let them speak about a society topic
- - make students aware of occidental burning news topics
+- make them read news papers
+- make them summarize opinions
+- let them speak about a society topic
+- make students aware of occidental burning news topics
 
 ## Questions
 
@@ -45,7 +45,7 @@ Q3 : The author mentions at the end of the article some turnarounds to re build 
 
 ### Donald Trump
 
-Q0 : Explain in a few sentences what american primaries are.
+Q0 : Explain in a few sentences what American primaries are.
 
 Q1 : What effects Donald Trump victory in New Hampshire and South Carolina will have ?
 
@@ -55,7 +55,7 @@ Q3 : Why do people wants to vote Trump anyway ?
 
 ### Jeb Bush
 
-Q0 : Explain in a few sentences what american primaries are.
+Q0 : Explain in a few sentences what American primaries are.
 
 Q1 : Why the author liked to cover Jeb Bush campaign ?
 
@@ -65,15 +65,15 @@ Q2 : Present 3 funny moments of his campaign to others ?
 
 Q1 : Why are the seas rising ?
 
-Q2 : WHat consequences will it have ?
+Q2 : What consequences will it have ?
 
-Q3 : List previous sea level variations from the artile.
+Q3 : List previous sea level variations from the article.
 
 ### Syria civil war
 
-Q1 : Explain Shia / sunnits difference.
+Q1 : Explain Shia / Sunnis difference.
 
-Q2 : What the neightbor Sunny village did ?
+Q2 : What the neighbor Sunny village did ?
 
 Q3 : How the siege evolved ?
 
@@ -81,7 +81,7 @@ Q4 : What is today situation ?
 
 ### Young voters
 
-Q0 : Explain in a few sentences what american primaries are.
+Q0 : Explain in a few sentences what American primaries are.
 
 Q1 : What changes with young voters ?
 
