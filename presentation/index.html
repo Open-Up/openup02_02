@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Open Up</title>
+
+		<meta name="description" content="Open Up : Lesson 2 DNS servers">
+		<meta name="author" content="Tellier Benoit">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+	
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+
+
+<section>
+<img data-src="img/large.png"><br/>
+<img data-src="img/openup.png">
+
+<h2>DNS servers</h2>
+
+<p>Speaker : <a>Benoit Tellier</a></p>
+
+<p><small>
+Retrieve this presentation online : <a href="https://rawgit.com/chibenwa/openup02_02/master/presentation/index.html">https://rawgit.com/chibenwa/openup02_02/master/presentation/index.html</a><br/>
+And on <a href="https://github.com/chibenwa/openup02_02/">GitHub</a></small>
+</p>
+</section>
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+<section>
+<h2>Objectives</h2>
+<ul>
+  <li class="fragment">Revision of the DNS protocol</li>
+  <li class="fragment">Use the hosts file</li>
+  <li class="fragment">Basic use of Bind DNS server</li>
+  <li class="fragment">Bind slavery</li>
+  <li class="fragment">Managing DNS zones</li>
+  <li class="fragment">Delegating zones</li>
+  <li class="fragment">Securing a DNS server</li>
+</ul>
+</section>
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+<section>
+  <section>
+    <h1>About the DNS protocol</h1>
+  </section>
+
+  <section>
+    <h2>Why do we need DNS ?</h2>
+    <ul>
+       <li class="fragment">Goolge : 74.125.68.100</li>
+       <li class="fragment">Yahoo : 98.139.183.24</li>
+       <li class="fragment">YouTube : 216.58.196.174</li>
+       <li class="fragment">Facebook : 66.220.156.68</li>
+       <li class="fragment">Twiter : 104.244.42.193</li>
+       <li class="fragment">AirBNB : 23.23.155.255</li>
+       <li class="fragment">IPV6 looks like that : 2001:db8::123:4567:89ab:cdef</li>
+       <li class="fragment">I prefer using <b>google.com</b>, <b>yahoo.com</b>, etc...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Domain names</h2>
+    <img data-src="img/domain_name_hierarchy.png">
+    <p class="fragment">Fully qualified domain names : wiki.minet.net. adh5.minet.net.</p>
+    <p class="fragment">Non fully qualified domain names : wiki adh5</p>
+  </section>
+
+  <section>
+    <h2>HOSTS.txt</h2>
+    <p class="fragment">Address translation first threw HOSTS.txt file (~10)</p>
+    <p class="fragment">Then centralization of the service... (1974)</p>
+    <p class="fragment">Decentralization using DNS protocol in 1983</p>
+    <span class="fragment"><a href="http://en.wikipedia.org/wiki/Hosts_file#History">History on wikipedia</a></span>
+  </section>
+
+  <section>
+    <h2>Top level domain</h2>
+    <p> Example : com. vn. net. fr.</p>
+    <p class="fragment">All have their administration rules, and their own prices</p>
+    <p class="fragment">DNS root serves TLD<p>
+    <p class="fragment"><a href="http://www.wikiwand.com/en/Top-level_domain">On wikipedia</a></p>
+  </section>
+
+  <section>
+    <h2>Second level domain</h2>
+    <p> Example : google.com. minet.net. yahoo.fr.</p>
+    <p class="fragment">The ones you can by</p>
+    <p class="fragment"><a href="http://www.wikiwand.com/en/Top-level_domain">On wikipedia</a></p>
+  </section>
+
+  <section>
+    <h2>DNS architecture</h2>
+    <p class="fragment">Every site maintains a DNS server</p>
+    <p class="fragment">SLD and subdomains</p>
+    <p class="fragment">UDP and TCP 53</p>
+  </section>
+
+  <section>
+    <h2>DNS zone</h2>
+    <p class="fragment">Unit of management for DNS declaration</p>
+    <p class="fragment">Manages all or a portion of a domain</p>
+    <p class="fragment">Managed by several servers</p>
+  </section>
+
+  <section>
+    <h2>DNS zone delegation</h2>
+    <p class="fragment">Delegate a zone management to an other server</p>
+    <p class="fragment">Allows information distribution of DNS</p>
+  </section>
+
+  <section>
+    <h2>Recursive resolution</h2>
+    <img data-src="img/recursive.png">
+  </section>
+
+  <section>
+    <h2>Introducing cache</h2>
+    <img data-src="img/cache.png">
+  </section>
+
+  <section>
+    <h2>Resolve DNS</h2>
+    <pre><code>nslookup google.com</code></pre>
+    <pre><code>Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+Name:	google.com
+Address: 74.125.68.101
+Name:	google.com
+Address: 74.125.68.102
+Name:	google.com
+Address: 74.125.68.138
+Name:	google.com
+Address: 74.125.68.113
+Name:	google.com
+Address: 74.125.68.100
+Name:	google.com
+Address: 74.125.68.139
+</code></pre>
+<p class="fragment">Select your DNS server using /etc/resolv.conf</p>
+<p class="fragment">DHCP</p>
+  </section>
+
+  <section>
+    <h2>Reverse resolution</h2>
+      <pre><code>nslookup 157.159.40.103</code></pre>
+    <pre><code>Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+103.40.159.157.in-addr.arpa	name = revproxy.minet.net.
+</code></pre>
+  <p class="fragment">FQDN : 103.40.159.157.in-addr.arpa</p>
+  </section>
+
+  <section>
+    <h2>Whois</h2>
+    <pre><code> whois minet.net</code></pre>
+    <pre><code>   Domain Name: MINET.NET
+   Registrar: GANDI SAS
+   Sponsoring Registrar IANA ID: 81
+   Whois Server: whois.gandi.net
+   Referral URL: http://www.gandi.net
+   Updated Date: 22-jun-2015
+   Creation Date: 16-aug-1997
+   Expiration Date: 15-aug-2016
+....
+Registrant Name: Association Minet
+Registrant Organization: Minet
+Registrant Street: 9, rue Charles Fourier
+Registrant City: EVRY
+Registrant Phone: +33.160766990
+Registrant Email: minet@it-sudparis.eu</code></pre>
+  </section>
+
+
+
+</section>
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+<section>
+  <section>
+    <h1>Discovering Bind</h1>
+  </section>
+  <section>
+    <h2>About bind</h2>
+    <p class="fragment">Berkeley Internet Name Domain</p>
+    <p class="fragment">1980</p>
+    <p class="fragment">Many other free DNS servers</p>
+    <p class="fragment">Internet Systems Consortium since 1995</p>
+    <p class="fragment"><a href="http://www.isc.org/downloads/bind/">Web site</a></p>
+    <p class="fragment"><a href="http://ftp.isc.org/isc/bind9/cur/9.10/doc/arm/Bv9ARM.html">Documentation</a></p>
+  </section>
+  <section>
+    <h2>Installing on Debian</h2>
+    <pre><code>apt-get install bind9</code></pre>
+    <pre class="fragment"><code>/etc/init.d/bind9 start | stop | reload | restart</code></pre> 
+  </section>
+  <section>
+    <h2>named.conf</h2>
+    <pre><code>options
+{
+  directory "/etc/bind";
+  listen-on-v6
+  {
+    any;
+  };
+  recursion yes;
+};
+
+# serveurs de la racine
+zone "."
+{
+  type hint;
+  file "named.cache";
+};</code></pre>
+  </section>
+  <section>
+    <h2>forwarding</h2>
+    <pre><code>options
+{
+  forward first ;
+
+  forwarders
+  {
+    203.0.113.51 ;
+    203.0.113.52 ;
+  } ;
+} ;</code></pre>
+  </section>
+  <section>
+    <h2>named.cache</h2>
+    <p class="fragment">Contains root DNS ips</p>
+    <p class="fragment">/etc/bind/db.root</p>
+    <pre class="fragment"><code>
+.                   3600000 IN NS   A.ROOT-SERVERS.NET.
+A.ROOT-SERVERS.NET. 3600000    A    198.41.0.4
+A.ROOT-SERVERS.NET. 3600000    AAAA 2001:503:BA3E::2:30
+;
+; FORMERLY NS1.ISI.EDU
+;
+.                   3600000    NS   B.ROOT-SERVERS.NET.
+B.ROOT-SERVERS.NET. 3600000    A    192.228.79.201
+B.ROOT-SERVERS.NET. 3600000    AAAA 2001:500:84::B</code></pre>
+  </section>
+  <section>
+    <h2>Validating named.conf syntax</h2>
+    <p class="fragment">Command <b>named-checkconf</b></p>
+    <pre class="fragment"><code>$ named-checkconf
+/etc/named.conf:11: unknown option ’recurion’</code></pre>
+  </section>
+</section>
+
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+<section>
+  <section>
+    <h1>Managing zones</h1>
+  </section>
+
+  <section>
+    <h2>named.conf</h2>
+    <pre class="fragment"><code>acl esclaves
+{
+    192.0.2.51 ;
+    203.0.113.33 ;
+} ;</code></pre>
+  </section>
+  <section>
+    <h2>named.conf</h2>
+    <pre class="fragment"><code>zone "example.com"
+{
+  type master ;
+  file "master/example.com" ;
+  allow-transfer
+  {
+    esclaves ;
+  } ;
+} ;</code></pre>
+  </section>
+  <section>
+    <h2>named.conf</h2>
+    <pre class="fragment"><code>zone "100.51.198.in-addr.arpa"
+{
+  type master ;
+  file "master/100.51.198.in-addr.arpa" ;
+  allow-transfer
+  {
+    esclaves ;
+  } ;
+} ;</code></pre>
+  </section>
+  <section>
+    <h2>Being a slave</h2>
+    <pre class="fragment"><code>zone "example.org"
+{
+  type slave ;
+  file "slave/example.org" ;
+  masters
+  {
+    192.0.2.33 ;
+  } ;
+} ;</code></pre>
+  </section>
+  <section>
+    <h2>zone files</h2>
+    <ul>Composed of :
+        <li class="fragment">Directives : <ul>
+           <li class="fragment">$INCLUDE</li>
+           <li class="fragment">$ORIGIN</li>
+           <li class="fragment">$TTL</li>
+        </ul></li>
+        <li class="fragment">Resource record</li>
+    </ul>
+  </section>
+  <section>
+     <h2>Resource record</h2>
+     <table><tbody><tr class="fragment"><td>A</td><td>address</td></tr>
+<tr class="fragment"><td>AAAA</td><td>IPv6 address</td></tr>
+<tr class="fragment"><td>CNAME</td><td>canonical name</td></tr>
+<tr class="fragment"><td>MX</td><td>mail exchange</td></tr>
+<tr class="fragment"><td>NS</td><td>name server</td></tr>
+<tr class="fragment"><td>PTR</td><td>pointer</td></tr>
+<tr class="fragment"><td>SOA</td><td>start of authority</td></tr></tbody>
+</table>
+  </section>
+
+  <section>
+    <h2>zone file example</h2>
+    <pre><code>$TTL 1d
+@ IN SOA ns.example.com. (
+                  2016022001 ; serial
+                  8h         ; refresh
+                  1w         ; expire
+                  3h )       ; negative caching TTL
+
+            NS       ns.example.com.
+            NS       ns.example.org.
+
+            MX    0  mail0.example.com.
+            MX    10 mail1.example.com.
+
+anakin      A        198.51.100.33
+darkvador   CNAME    anakin</code></pre>
+  </section>
+
+  <section>
+    <h2>zone inverse example</h2>
+    <pre><code>$TTL 1d
+@ IN SOA ns.example.com. (
+                  2016022001 ; serial
+                  8h         ; refresh
+                  1w         ; expire
+                  3h )       ; negative caching TTL
+
+            NS       ns.example.com.
+            NS       ns.example.org.
+
+33          PTR      mail.example.com.
+51          PTR      www.example.com.</code></pre>
+  </section>
+  <section>
+    <h2>Delegating zones</h2>
+    <pre><code>sub-domain    NS ns.sub-domain
+ns.sub-domain A  198.51.100.33</code></pre>
+  </section>
+
+  <section>
+    <h2>Verofying zone files</h2>
+    <pre class="fragment"><code></code>named-checkzone example.com example.com
+zone example.com/IN: loaded serial 2011102100
+OK</pre>
+    <pre class="fragment"><code></code>$ named-checkzone example.com example.com
+zone example.com/IN: example.com/MX ’mail.example.com’ has no address records (A or AAAA)
+zone example.com/IN: loaded serial 2011102100
+OK</pre>
+    <pre class="fragment"><code>$ named-checkzone example.com example.com
+zone example.com/IN: NS ’ns.example.com’ has no address records (A or AAAA)
+zone example.com/IN: not loaded due to errors.</code></pre>
+  </section>
+  <section>
+    <h2>dig command</h2>
+    <pre><code>dig google.com</code></pre>
+    <pre><code>;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;google.com.			IN	A
+
+;; ANSWER SECTION:
+google.com.		24	IN	A	216.58.199.206
+
+;; Query time: 116 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Tue Feb 23 10:52:42 ICT 2016
+;; MSG SIZE  rcvd: 55</code></pre>
+  </section>
+  <section>
+    <h2>DNS round robin</h2>
+    <pre><code>mail    IN  A       192.168.0.4
+        IN  A       192.168.0.5
+        IN  A       192.168.0.6</code></pre>
+<pre class="fragment"><code>mail    A 192.168.0.4
+mail    A 192.168.0.5
+mail    A 192.168.0.6</code></pre>
+<pre class="fragment"><code>mail    A 192.168.0.5
+mail    A 192.168.0.6
+mail    A 192.168.0.4</code></pre>
+<pre class="fragment"><code>mail    A 192.168.0.6
+mail    A 192.168.0.4
+mail    A 192.168.0.5</code></pre>
+<pre class="fragment"><code>mail    A 192.168.0.4
+mail    A 192.168.0.5
+mail    A 192.168.0.6</code></pre>
+<p class="fragment">...</p>
+  </section>
+</section>
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+<section>
+  <section>
+    <h1>Bind and security</h1>
+  </section>
+  <section>
+   <h2>Tips</h2>
+   <p class="fragment">Non privilege user handled by package</p>
+   <p class="fragment">Option <b>version none ;</b></p>
+  </section>
+
+  <section>
+   <h2>TSIG</h2>
+   <p class="fragment">Transaction signature</p>
+   <p class="fragment">Hash + secret + hour</p>
+   <p class="fragment">Configured in named.conf</p>
+  </section>
+
+  <section>
+   <h2>TSIG : generating secret</h2>
+   <pre><code>$ dnssec-keygen -a hmac-sha256 -b 128 -n HOST s1-s2.
+Ks1-s2.+163+22242</code></pre>
+<pre class="fragment"><code>$ cat Ks1-s2.+163+22242.key
+s1-s2. IN KEY 512 3 163 6Bmt+px0gMyIznRcv+Xg2A==</code></pre>
+<pre class="fragment"><code>$ cat Ks1-s2.+163+22242.private</code></pre></code></pre>
+  </section>
+  <section>
+    <h2>TSIG and named.conf</h2>
+    <pre><code>key s1-s2.
+{
+  algorithm hmac-sha256 ;
+  secret "6Bmt+px0gMyIznRcv+Xg2A==" ;
+} ;
+
+server 198.51.100.33
+# s2 IP address
+{
+  keys
+  {
+    s1-s2. ;
+  } ;
+};</code></pre>
+  <p class="fragment">Idem on s2</p>
+  </section>
+  <section>
+   <h2>DNSSEC</h2>
+  </section>
+</section>
+
+<!--------------------------------------------------
+----------------------------------------------------
+================================================----
+NEW SECTION NEW SECTION NEW SECTION NEW SECTION=----
+================================================----
+----------------------------------------------------
+---------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section>
+	<h1>Questions ?</h1>
+</section>
+
+
+
+
+
+
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				slideNumber: true,
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+                                
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
